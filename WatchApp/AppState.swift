@@ -67,8 +67,8 @@ final class AppState: ObservableObject {
                                 title: "Rising fast", body: "134 and climbing about 2.4 per min. Log what you ate, or take a short walk.")
         case .spike:
             snapshot = DemoData.snapshot(now: now)
-            activeAlert = GlucoseAlert(kind: .spike, date: now, mgdl: 168, delta: 71,
-                                       title: "Spike to 168", body: "168 mg/dL, +71 in the last hour. What did you eat?")
+            activeAlert = GlucoseAlert(kind: .spike, date: now, mgdl: 168, delta: 74,
+                                       title: "Spike to 168", body: "168 mg/dL, +74 in the last hour. What did you eat?")
         case .voice:
             snapshot = DemoData.snapshot(now: now)
             showVoice = true
