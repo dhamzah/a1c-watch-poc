@@ -29,7 +29,8 @@ func scheduleNextRefresh() async {
 
 final class AppDelegate: NSObject, WKApplicationDelegate {
     func applicationDidFinishLaunching() {
-        Notifier.requestAuthorization()
+        // Screenshot/demo runs pass "-screen"; skip the permission prompt so it doesn't cover the UI.
+        if !ProcessInfo.processInfo.arguments.contains("-screen") { Notifier.requestAuthorization() }
         Task { await scheduleNextRefresh() }
     }
 }
