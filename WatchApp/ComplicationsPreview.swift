@@ -6,17 +6,19 @@ struct ComplicationsPreview: View {
     var body: some View {
         let s = state.snapshot
         ScrollView {
-            VStack(spacing: 10) {
-                Text("Complications").font(.headline)
-                HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 10) {
+                Eyebrow(text: "Watch face", color: A1CColor.blue300)
+                HStack(spacing: 8) {
                     GlucoseCircular(s: s).frame(width: 50, height: 50)
                     ScoreCircular(label: "BB", value: s.bodyBattery, color: A1CColor.battery).frame(width: 50, height: 50)
                     ScoreCircular(label: "RD", value: s.readiness, color: A1CColor.readiness).frame(width: 50, height: 50)
                 }
-                GlucoseRectangular(s: s)
-                    .padding(6).background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                GlucoseInline(s: s).font(.footnote)
+                .frame(maxWidth: .infinity)
+                A1CCard { GlucoseRectangular(s: s) }
+                GlucoseInline(s: s).font(A1CFont.mono(12)).foregroundStyle(A1CColor.ultraWhite)
+                    .frame(maxWidth: .infinity)
             }
         }
+        .background(A1CColor.royalBlack)
     }
 }

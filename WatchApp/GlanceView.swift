@@ -6,51 +6,62 @@ struct GlanceView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 8) {
-                if s.hasCGM { glucoseHeader; GlucoseGraph(points: s.last3h).frame(height: 62) }
+            VStack(alignment: .leading, spacing: 10) {
+                if s.hasCGM {
+                    glucoseHeader
+                    GlucoseGraph(points: s.last3h).frame(height: 58)
+                }
                 scores
                 Button { state.showVoice = true } label: {
-                    Label("Log food or activity", systemImage: "mic.fill").font(.system(size: 14, weight: .semibold))
-                        .frame(maxWidth: .infinity)
+                    Label("Log food or activity", systemImage: "mic.fill")
                 }
-                .tint(A1CColor.inRange)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(A1CPrimaryButton())
                 if !s.hasCGM { goals }
-                if let tir = s.tirTodayPct { Text("Time in range today \(tir)%").font(.footnote).foregroundStyle(.secondary) }
+                if let tir = s.tirTodayPct {
+                    HStack { Eyebrow(text: "Time in range today"); Spacer()
+                        Text("\(tir)%").font(A1CFont.mono(12, .semibold)).foregroundStyle(A1CColor.inRange) }
+                }
             }
             .padding(.horizontal, 4)
         }
-        .navigationTitle("A1C")
+        .background(A1CColor.royalBlack)
     }
 
     private var glucoseHeader: some View {
         let stale = s.isStale()
         let v = s.latest?.mgdl ?? 0
-        return HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text("\(Int(v))").font(.system(size: 44, weight: .bold, design: .rounded))
-            VStack(alignment: .leading, spacing: 0) {
-                Text(s.trend.arrow).font(.system(size: 22, weight: .bold))
-                Text("mg/dL").font(.system(size: 11)).foregroundStyle(.secondary)
+        let c = stale ? A1CColor.stale : A1CColor.glucose(v)
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 5) {
+                Circle().fill(c).frame(width: 6, height: 6)
+                Eyebrow(text: stale ? "No new reading" : "Glucose · \(s.ageMinutes() ?? 0)m ago")
             }
-            Spacer()
-            Text(stale ? "stale" : "\(s.ageMinutes() ?? 0)m").font(.footnote).foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Text("\(Int(v))").font(A1CFont.display(50, "Light")).foregroundStyle(A1CColor.ultraWhite)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(s.trend.arrow).font(.system(size: 20, weight: .semibold)).foregroundStyle(c)
+                    Text("mg/dL").font(A1CFont.mono(10)).foregroundStyle(A1CColor.fgMuted)
+                }
+            }
         }
-        .foregroundStyle(stale ? A1CColor.stale : A1CColor.glucose(v))
     }
 
     private var scores: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 8) {
             ScoreRing(label: "Battery", value: s.bodyBattery, color: A1CColor.battery)
-            ScoreRing(label: "Ready", value: s.readiness, color: A1CColor.readiness)
+            ScoreRing(label: "Readiness", value: s.readiness, color: A1CColor.readiness)
         }
     }
 
     private var goals: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Label("\(s.steps.formatted()) steps", systemImage: "figure.walk")
-            Label("\(s.daylightMin) min daylight", systemImage: "sun.max.fill")
+        A1CCard {
+            VStack(alignment: .leading, spacing: 6) {
+                Eyebrow(text: "Today")
+                Label("\(s.steps.formatted()) steps", systemImage: "figure.walk")
+                Label("\(s.daylightMin) min daylight", systemImage: "sun.max.fill")
+            }
+            .font(A1CFont.body(14)).foregroundStyle(A1CColor.ultraWhite)
         }
-        .font(.footnote).frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -59,16 +70,18 @@ struct ScoreRing: View {
     let value: Int
     let color: Color
     var body: some View {
-        VStack(spacing: 2) {
-            ZStack {
-                Circle().stroke(color.opacity(0.25), lineWidth: 6)
-                Circle().trim(from: 0, to: CGFloat(value) / 100)
-                    .stroke(color, style: StrokeStyle(lineWidth: 6, lineCap: .round)).rotationEffect(.degrees(-90))
-                Text("\(value)").font(.system(size: 17, weight: .bold, design: .rounded))
+        A1CCard {
+            VStack(spacing: 4) {
+                ZStack {
+                    Circle().stroke(Color.white.opacity(0.08), lineWidth: 5)
+                    Circle().trim(from: 0, to: CGFloat(value) / 100)
+                        .stroke(color, style: StrokeStyle(lineWidth: 5, lineCap: .round)).rotationEffect(.degrees(-90))
+                    Text("\(value)").font(A1CFont.display(18)).foregroundStyle(A1CColor.ultraWhite)
+                }
+                .frame(width: 44, height: 44)
+                Eyebrow(text: label)
             }
-            .frame(width: 50, height: 50)
-            Text(label).font(.system(size: 11)).foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
     }
 }

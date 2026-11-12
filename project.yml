@@ -32,6 +32,7 @@ targets:
         CFBundleDisplayName: A1C
         WKApplication: true
         WKWatchOnly: true
+        UIAppFonts: [Chillax-Light.otf, Chillax-Regular.otf, Chillax-Medium.otf]
         NSMicrophoneUsageDescription: A1C uses the microphone so you can log food and activity by voice.
         NSHealthShareUsageDescription: A1C reads heart rate and workouts to improve Body Battery and Readiness.
     settings:
@@ -52,6 +53,7 @@ targets:
       path: Complications/Info.plist
       properties:
         CFBundleDisplayName: A1C Complications
+        UIAppFonts: [Chillax-Light.otf, Chillax-Regular.otf, Chillax-Medium.otf]
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:

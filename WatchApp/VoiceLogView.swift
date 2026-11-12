@@ -16,20 +16,22 @@ struct VoiceLogView: View {
                             onSave: { state.save(p); dismiss() },
                             onEdit: { text = p.text; state.pendingLog = nil })
             } else {
-                VStack(spacing: 8) {
-                    Text("What did you eat or do?").font(.headline).multilineTextAlignment(.center)
+                VStack(alignment: .leading, spacing: 8) {
+                    Eyebrow(text: "Log", color: A1CColor.blue300)
+                    Text("What did you eat or do?").font(A1CFont.display(19)).foregroundStyle(A1CColor.ultraWhite)
                     TextField("Tap to speak", text: $text)
                         .onSubmit { parse() }
                     Text("e.g. \"nasi padang, setengah nasi\" or \"jalan 20 menit\"")
-                        .font(.system(size: 11)).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                        .font(A1CFont.body(11)).foregroundStyle(A1CColor.fgMuted)
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 6) {
                         ForEach(quick, id: \.self) { q in
-                            Button(q) { text = q; parse() }.font(.system(size: 12)).lineLimit(1)
+                            Button(q) { text = q; parse() }.buttonStyle(A1CSecondaryButton()).lineLimit(1)
                         }
                     }
                 }
             }
         }
+        .background(A1CColor.royalBlack)
     }
 
     private func parse() {
@@ -55,15 +57,25 @@ struct ConfirmCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(entry.kind.rawValue.capitalized, systemImage: icon).font(.footnote).foregroundStyle(.secondary)
-            Text(entry.summary).font(.headline)
-            if let c = entry.carbsG { Text("~\(c) g carbs").font(.footnote).foregroundStyle(A1CColor.high) }
-            if let m = entry.minutes { Text("\(m) min").font(.footnote) }
-            Text("\"\(entry.text)\"").font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(2)
-            Button(action: onSave) { Text("Save").frame(maxWidth: .infinity) }
-                .buttonStyle(.borderedProminent).tint(A1CColor.inRange)
-            Button("Edit", action: onEdit)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 5) {
+                Image(systemName: icon).font(.system(size: 10)).foregroundStyle(A1CColor.blue300)
+                Eyebrow(text: entry.kind.rawValue, color: A1CColor.blue300)
+            }
+            Text(entry.summary).font(A1CFont.display(18)).foregroundStyle(A1CColor.ultraWhite)
+            HStack(spacing: 6) {
+                if let c = entry.carbsG { chip("~\(c) g carbs", A1CColor.warning) }
+                if let m = entry.minutes { chip("\(m) min", A1CColor.success) }
+            }
+            Text("\"\(entry.text)\"").font(A1CFont.body(11)).foregroundStyle(A1CColor.fgMuted).lineLimit(2)
+            Button("Save", action: onSave).buttonStyle(A1CPrimaryButton())
+            Button("Edit", action: onEdit).buttonStyle(A1CSecondaryButton())
         }
+    }
+
+    func chip(_ s: String, _ c: Color) -> some View {
+        Text(s).font(A1CFont.mono(11, .semibold)).foregroundStyle(c)
+            .padding(.horizontal, 8).padding(.vertical, 3)
+            .background(c.opacity(0.14), in: Capsule())
     }
 }

@@ -10,7 +10,7 @@ struct GlucoseCircular: View {
             AccessoryWidgetBackground()
             VStack(spacing: -2) {
                 Text(s.latest.map { "\(Int($0.mgdl))" } ?? "--")
-                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .font(A1CFont.display(18))
                     .minimumScaleFactor(0.6)
                 Text(stale ? "old" : s.trend.arrow)
                     .font(.system(size: 12, weight: .semibold))
@@ -28,12 +28,12 @@ struct GlucoseRectangular: View {
         HStack(spacing: 6) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(s.latest.map { "\(Int($0.mgdl))" } ?? "--").font(.system(size: 22, weight: .bold, design: .rounded))
+                    Text(s.latest.map { "\(Int($0.mgdl))" } ?? "--").font(A1CFont.display(24))
                     Text(s.trend.arrow).font(.system(size: 14, weight: .bold))
                 }
                 .foregroundStyle(stale ? A1CColor.stale : A1CColor.glucose(s.latest?.mgdl ?? 100))
                 Text(stale ? "No new reading" : "mg/dL · \(s.ageMinutes() ?? 0)m ago")
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
+                    .font(A1CFont.mono(10)).foregroundStyle(A1CColor.fgMuted)
             }
             GlucoseSparkline(points: s.last3h).frame(maxWidth: .infinity, maxHeight: 34)
         }
@@ -48,7 +48,7 @@ struct ScoreCircular: View {
         Gauge(value: Double(value), in: 0...100) {
             Text(label)
         } currentValueLabel: {
-            Text("\(value)").font(.system(size: 16, weight: .bold, design: .rounded))
+            Text("\(value)").font(A1CFont.display(16))
         }
         .gaugeStyle(.accessoryCircular)
         .tint(color)
@@ -73,7 +73,7 @@ struct GlucoseSparkline: View {
             let hi = max(vals.max() ?? 180, t.high + 20)
             let y: (Double) -> CGFloat = { v in g.size.height * CGFloat(1 - (v - lo) / (hi - lo)) }
             ZStack {
-                Rectangle().fill(A1CColor.inRange.opacity(0.18))
+                Rectangle().fill(A1CColor.moroccanBlue.opacity(0.18))
                     .frame(height: max(1, y(t.low) - y(t.high)))
                     .position(x: g.size.width / 2, y: (y(t.low) + y(t.high)) / 2)
                 Path { p in

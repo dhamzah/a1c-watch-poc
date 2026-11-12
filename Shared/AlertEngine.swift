@@ -59,7 +59,10 @@ struct AlertEngine {
     func recap(_ s: Snapshot) -> (peak: Int, rise: Int, minutesAbove: Int)? {
         guard s.hasCGM, let last = s.latest else { return nil }
         let win = s.points.filter { last.date.timeIntervalSince($0.date) <= 3 * 3600 }
-        guard let peak = win.max(by: { $0.mgdl < $1.mgdl }), let base = win.map(\.mgdl).min() else { return nil }
+        guard let peak = win.max(by: { $0.mgdl < $1.mgdl }) else { return nil }
+        // Same baseline rule as the spike alert: lowest reading in the 60 min before the peak.
+        let pre = win.filter { $0.date <= peak.date && peak.date.timeIntervalSince($0.date) <= 3600 }
+        guard let base = pre.map(\.mgdl).min() else { return nil }
         let above = win.filter { $0.mgdl > t.high }.count * 5
         return (Int(peak.mgdl), Int(peak.mgdl - base), above)
     }
