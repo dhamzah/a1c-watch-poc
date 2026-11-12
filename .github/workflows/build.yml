@@ -12,10 +12,12 @@ jobs:
       - name: Select Xcode
         run: |
           ls /Applications | grep Xcode
-          sudo xcode-select -s "$(ls -d /Applications/Xcode_16*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | sort -V | tail -1)"
           xcodebuild -version
       - name: Install tools
-        run: brew install xcodegen xcpretty || gem install xcpretty
+        run: |
+          brew install xcodegen
+          gem install xcpretty || true
       - name: Generate project
         run: xcodegen generate
       - name: Make sure a watchOS simulator exists
