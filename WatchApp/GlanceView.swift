@@ -34,7 +34,7 @@ struct GlanceView: View {
         return VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 5) {
                 Circle().fill(c).frame(width: 6, height: 6)
-                Eyebrow(text: stale ? "No new reading" : "Glucose · \(s.ageMinutes() ?? 0)m ago")
+                Eyebrow(text: stale ? "No new reading" : ((s.ageMinutes() ?? 0) < 1 ? "Glucose · now" : "Glucose · \(s.ageMinutes() ?? 0) min ago"))
             }
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text("\(Int(v))").font(A1CFont.display(50, "Light")).foregroundStyle(A1CColor.ultraWhite)

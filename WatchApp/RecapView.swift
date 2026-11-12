@@ -17,7 +17,7 @@ struct RecapView: View {
                 A1CCard {
                     VStack(spacing: 6) {
                         if let r {
-                            row("Rise", "+\(r.rise)")
+                            row("Rise", "+\(state.alerts.last(where: { $0.kind == .spike })?.delta.map { Int($0) } ?? r.rise)")
                             row("Above 140", "\(r.minutesAbove) min")
                         }
                         row("Likely cause", state.logs.last(where: { $0.kind == .food })?.summary.components(separatedBy: ",").first ?? "Nasi padang")

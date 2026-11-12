@@ -62,7 +62,7 @@ struct ConfirmCard: View {
                 Image(systemName: icon).font(.system(size: 10)).foregroundStyle(A1CColor.blue300)
                 Eyebrow(text: entry.kind.rawValue, color: A1CColor.blue300)
             }
-            Text(entry.summary).font(A1CFont.display(18)).foregroundStyle(A1CColor.ultraWhite)
+            Text(entry.summary).font(A1CFont.display(16)).lineLimit(2).minimumScaleFactor(0.8).foregroundStyle(A1CColor.ultraWhite)
             HStack(spacing: 6) {
                 if let c = entry.carbsG { chip("~\(c) g carbs", A1CColor.warning) }
                 if let m = entry.minutes { chip("\(m) min", A1CColor.success) }
