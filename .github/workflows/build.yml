@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: macos-15
@@ -29,6 +31,16 @@ jobs:
           xcrun simctl list devices available | grep "Apple Watch"
       - name: Build, run, screenshot
         run: ./scripts/screenshots.sh
+      - name: Publish screenshots to the screenshots branch
+        run: |
+          mkdir -p /tmp/shots && cp screenshots/*.png /tmp/shots/
+          git config user.name "a1c-watch-ci"; git config user.email "ci@users.noreply.github.com"
+          git checkout --orphan screenshots
+          git rm -rf . -q
+          cp /tmp/shots/*.png .
+          git add *.png
+          git commit -qm "Screenshots for ${GITHUB_SHA::7}"
+          git push -f origin screenshots
       - uses: actions/upload-artifact@v4
         if: always()
         with:
