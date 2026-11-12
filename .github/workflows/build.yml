@@ -1,0 +1,39 @@
+name: Build watchOS POC + screenshots
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: |
+          ls /Applications | grep Xcode
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_16*.app | sort -V | tail -1)"
+          xcodebuild -version
+      - name: Install tools
+        run: brew install xcodegen xcpretty || gem install xcpretty
+      - name: Generate project
+        run: xcodegen generate
+      - name: Make sure a watchOS simulator exists
+        run: |
+          xcrun simctl list runtimes
+          if ! xcrun simctl list devices available | grep -q "Apple Watch"; then
+            xcodebuild -downloadPlatform watchOS
+          fi
+          xcrun simctl list devices available | grep "Apple Watch"
+      - name: Build, run, screenshot
+        run: ./scripts/screenshots.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots/
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs
+          path: build.log

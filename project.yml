@@ -1,0 +1,64 @@
+name: A1CWatch
+options:
+  bundleIdPrefix: io.a1c
+  deploymentTarget:
+    watchOS: "10.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    DEVELOPMENT_TEAM: ""
+targets:
+  A1CWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - WatchApp
+      - Shared
+    dependencies:
+      - target: A1CComplications
+        embed: true
+    entitlements:
+      path: WatchApp/A1CWatch.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.a1c.watch.poc]
+    info:
+      path: WatchApp/Info.plist
+      properties:
+        CFBundleDisplayName: A1C
+        WKApplication: true
+        WKWatchOnly: true
+        NSMicrophoneUsageDescription: A1C uses the microphone so you can log food and activity by voice.
+        NSHealthShareUsageDescription: A1C reads heart rate and workouts to improve Body Battery and Readiness.
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.a1c.watch.poc
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+  A1CComplications:
+    type: app-extension
+    platform: watchOS
+    sources:
+      - Complications
+      - Shared
+    entitlements:
+      path: Complications/A1CComplications.entitlements
+      properties:
+        com.apple.security.application-groups: [group.io.a1c.watch.poc]
+    info:
+      path: Complications/Info.plist
+      properties:
+        CFBundleDisplayName: A1C Complications
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.a1c.watch.poc.complications
+schemes:
+  A1CWatch:
+    build:
+      targets:
+        A1CWatch: all
