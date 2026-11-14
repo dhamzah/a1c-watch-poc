@@ -48,9 +48,14 @@ enum A1CColor {
 }
 
 enum A1CFont {
-    /// Chillax, the a1c.io display face. Falls back to SF if the font failed to register.
+    /// Display face. a1c.io uses Chillax (ITF Free Font License: can't be redistributed in a public repo),
+    /// so the POC uses SF. To restore it in a private build, add Chillax-*.otf to Shared/Fonts,
+    /// list them under UIAppFonts in project.yml, and set useChillax = true.
+    static let useChillax = false
     static func display(_ size: CGFloat, _ weight: String = "Medium") -> Font {
-        .custom("Chillax-\(weight)", size: size)
+        if useChillax { return .custom("Chillax-\(weight)", size: size) }
+        let w: Font.Weight = ["Light": .light, "Regular": .regular, "Medium": .medium, "Semibold": .semibold, "Bold": .bold][weight] ?? .medium
+        return .system(size: size, weight: w, design: .rounded)
     }
     static func body(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         .system(size: size, weight: weight)

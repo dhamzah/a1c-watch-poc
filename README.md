@@ -35,3 +35,7 @@ CI (`.github/workflows/build.yml`) builds for the simulator and uploads screensh
 - watchOS rations background refresh and complication reloads; expect 5–15 min freshness unless pushes are used.
 - Glucose is only as fresh as the iPhone app's upload to the backend.
 - Wellness positioning: alerts are informational, "Not for treatment decisions".
+
+## Fonts
+
+The a1c.io display font, Chillax (Fontshare), is under the ITF Free Font License. That license allows embedding it in an app but not redistributing the font files, so they are not in this repo. The POC uses SF Rounded instead. To use Chillax in a private build, download it from fontshare.com, put Chillax-{Light,Regular,Medium}.otf in Shared/Fonts, add them to UIAppFonts for both targets in project.yml, and set `A1CFont.useChillax = true` in Shared/Theme.swift.
